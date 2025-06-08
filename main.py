@@ -1,9 +1,10 @@
 import os
 import torch
-from ordered_network import OrderedNetwork
-from utils import train, test, adjust_weights
+from models.ordered_network import OrderedNetwork
+from models.group_lasso import GroupLassoNetwork
+from utils.utils import train, test, adjust_weights
 
-model = OrderedNetwork(alpha=0.5, beta=0.1)
+model = GroupLassoNetwork(lambda_reg=1e-4)
 epochs = 10
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
