@@ -2,9 +2,10 @@ import os
 import torch
 from models.ordered_network import OrderedNetwork
 from models.group_lasso import GroupLassoNetwork
+from models.post_train_pruning import PostTrainPruningNetwork
 from utils.utils import train, test, adjust_weights
 
-model = GroupLassoNetwork(lambda_reg=1e-4)
+model = PostTrainPruningNetwork()
 epochs = 10
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
