@@ -1,36 +1,16 @@
 import torch
-from torch import nn
 import torch_pruning as tp
 from utils.utils import test_loader
+from models.base import BaseNetwork
 
-class PostTrainPruningNetwork(nn.Module):
+class PostTrainPruningNetwork(BaseNetwork):
     name = 'post_train_pruning'
 
-    def __init__(self):
-        super().__init__()
-
-        self.flatten = nn.Flatten()
-        self.layers = nn.Sequential(
-            nn.Linear(784, 128),
-            nn.ReLU(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, 10)
-        )
-    
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.layers(x)
-        return x
-
-    def regularization(self, epoch, epochs):
-        return 0
-
-    def normalize(self, weights):
-        return torch.abs(weights) / torch.sum(torch.abs(weights))
+    def __init__(self, layer_sizes):
+        super().__init__(layer_sizes)
     
     def prune(self, amount):
-        result = PostTrainPruningNetwork()
+        result = PostTrainPruningNetwork(self.layer_sizes)
         result.load_state_dict(self.state_dict())
         
         example_inputs, _ = next(iter(test_loader))
