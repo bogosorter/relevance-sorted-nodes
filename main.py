@@ -3,16 +3,17 @@ import torch
 from models.ordered import OrderedNetwork
 from models.group_lasso import GroupLassoNetwork
 from models.post_train_pruning import PostTrainPruningNetwork
+from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights
 
-models = [OrderedNetwork(0.5, 0.1), GroupLassoNetwork(1e-4), PostTrainPruningNetwork()]
-epochs = 10
+models = [OrderedNetwork(0.5, 0.1), GroupLassoNetwork(1e-4), PostTrainPruningNetwork(), RandomNetwork()]
+model_epochs = [10, 10, 10, 0]
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
-pruning_steps = 32 # Number of steps in model pruning
+pruning_steps = 64 # Number of steps in model pruning
 adjusting_steps = 10 # Number of steps to adjust weights after pruning
 
-for model in models:
+for model, epochs in zip(models, model_epochs):
     # Train the full model
     print(f'Training {model.name}...')
     train(model, epochs, optimizer(model.parameters()), criterion)
@@ -24,7 +25,7 @@ for model in models:
     for i in range(pruning_steps):
         amount = (i + 1) / pruning_steps
         pruned = model.prune(amount)
-        adjust_weights(pruned, adjusting_steps, optimizer(model.parameters()), criterion)
+        adjust_weights(pruned, adjusting_steps, optimizer(pruned.parameters()), criterion)
         
         accuracy = test(pruned)
         results.append(accuracy)

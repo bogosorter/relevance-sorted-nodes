@@ -1,7 +1,6 @@
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from matplotlib import pyplot
 
 train_data = datasets.FashionMNIST(
     root='data',
@@ -28,7 +27,7 @@ def train(model, epochs, optimizer, loss_fn):
             output = model(input)
             loss = loss_fn(output, target) + model.regularization(epoch, epochs)
             loss.backward()
-            optimizer.step()            
+            optimizer.step()
 
 def test(model):
     model.eval()
