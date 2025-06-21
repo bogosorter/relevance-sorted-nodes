@@ -2,14 +2,14 @@ import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-train_data = datasets.FashionMNIST(
+train_data = datasets.CIFAR10(
     root='data',
     train=True,
     download=True,
     transform=transforms.ToTensor()
 )
 
-test_data = datasets.FashionMNIST(
+test_data = datasets.CIFAR10(
     root='data',
     train=False,
     download=True,

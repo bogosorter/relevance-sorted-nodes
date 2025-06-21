@@ -6,9 +6,9 @@ from models.post_train_pruning import PostTrainPruningNetwork
 from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights
 
-hidden_layers = [784, 128, 64, 10]
+hidden_layers = [3072, 1024, 512, 256, 10]
 models = [OrderedNetwork(hidden_layers, 0.5, 0.1), GroupLassoNetwork(hidden_layers, 1e-4), PostTrainPruningNetwork(hidden_layers), RandomNetwork(hidden_layers)]
-model_epochs = [5, 5, 5, 0]
+model_epochs = [10, 10, 10, 0]
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 pruning_steps = 32 # Number of steps in model pruning
