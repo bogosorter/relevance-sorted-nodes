@@ -27,6 +27,9 @@ class OrderedNetwork(BaseNetwork):
 
         for i in range(len(self.penalties)):
             total += torch.sum(
+                self.normalize(self.layers[2 * i].weight).T @ self.penalties[i][:, None]
+            )
+            total += torch.sum(
                 self.penalties[i][None, :] @ self.normalize(self.layers[2 * (i + 1)].weight).T
             )
 

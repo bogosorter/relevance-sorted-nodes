@@ -12,7 +12,7 @@ model_epochs = [10, 10, 10, 0]
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 pruning_steps = 32 # Number of steps in model pruning
-adjusting_steps = 50 # Number of steps to adjust weights after pruning
+adjusting_steps = 0 # Number of steps to adjust weights after pruning
 
 for model, epochs in zip(models, model_epochs):
     # Train the full model
