@@ -7,12 +7,12 @@ from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights
 
 hidden_layers = [3072, 1024, 512, 256, 10]
-models = [OrderedNetwork(hidden_layers, 0.5, 0.1), GroupLassoNetwork(hidden_layers, 1e-4), PostTrainPruningNetwork(hidden_layers), RandomNetwork(hidden_layers)]
+models = [OrderedNetwork(hidden_layers, 0.8, 0.04), GroupLassoNetwork(hidden_layers, 1e-4), PostTrainPruningNetwork(hidden_layers), RandomNetwork(hidden_layers)]
 model_epochs = [10, 10, 10, 0]
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 pruning_steps = 32 # Number of steps in model pruning
-adjusting_steps = 10 # Number of steps to adjust weights after pruning
+adjusting_steps = 50 # Number of steps to adjust weights after pruning
 
 for model, epochs in zip(models, model_epochs):
     # Train the full model
