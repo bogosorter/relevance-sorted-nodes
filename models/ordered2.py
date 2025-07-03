@@ -50,7 +50,7 @@ class OrderedNetwork2(BaseNetwork):
                 self.penalties[i][None, :] @ self.normalize(self.layers[2 * (i + 1)].weight).T
             )
 
-        return total / len(self.penalties) * (1 - epoch / epochs)
+        return total / len(self.penalties)
 
     def normalize(self, weights):
         return torch.abs(weights) / torch.sum(torch.abs(weights))

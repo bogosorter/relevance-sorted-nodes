@@ -1,15 +1,19 @@
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+import numpy as np
+from scipy import stats
 
-train_data = datasets.CIFAR10(
+dataset = datasets.FashionMNIST
+
+train_data = dataset(
     root='data',
     train=True,
     download=True,
     transform=transforms.ToTensor()
 )
 
-test_data = datasets.CIFAR10(
+test_data = dataset(
     root='data',
     train=False,
     download=True,
@@ -54,3 +58,11 @@ def adjust_weights(model, steps, optimizer, loss_fn):
         loss = loss_fn(output, target)
         loss.backward()
         optimizer.step()
+
+def conf_interval(data, conf):
+    mean = np.mean(data)
+    sem = stats.sem(data)  # standard error of mean
+    margin = sem * stats.t.ppf(0.5 + conf / 2, len(data) - 1)
+    lower = mean - margin
+    upper = mean + margin
+    return mean, lower, upper
