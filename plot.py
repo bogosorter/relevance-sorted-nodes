@@ -27,6 +27,6 @@ for filename in os.listdir(directory):
 plt.xlabel("Model Size")
 plt.ylabel("Accuracy")
 plt.title("Accuracy vs. Model Size")
-plt.legend()
+plt.legend(loc='lower right')
 plt.grid(True)
 plt.show()

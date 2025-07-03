@@ -4,11 +4,12 @@ from models.ordered import OrderedNetwork
 from models.group_lasso import GroupLassoNetwork
 from models.post_train_pruning import PostTrainPruningNetwork
 from models.random import RandomNetwork
+from models.ordered2 import OrderedNetwork2
 from utils.utils import train, test, adjust_weights
 
 hidden_layers = [3072, 1024, 512, 256, 10]
-models = [OrderedNetwork(hidden_layers, 0.8, 0.04), GroupLassoNetwork(hidden_layers, 1e-4), PostTrainPruningNetwork(hidden_layers), RandomNetwork(hidden_layers)]
-model_epochs = [10, 10, 10, 0]
+models = [OrderedNetwork2(hidden_layers, 0.5, 0.04), GroupLassoNetwork(hidden_layers, 1e-4), RandomNetwork(hidden_layers)]
+model_epochs = [5, 5, 0]
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 pruning_steps = 32 # Number of steps in model pruning
