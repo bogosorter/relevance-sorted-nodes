@@ -9,7 +9,7 @@ from utils.utils import train, test, adjust_weights, conf_interval
 
 pruning_steps = 32
 adjusting_steps = 2
-repetitions = 2
+repetitions = 10
 confidence = 0.95
 
 layers = [784, 400, 300, 100, 10]
@@ -18,7 +18,7 @@ models = [
     lambda: GroupLassoNetwork(layers, 1e-4),
     lambda: RandomNetwork(layers)
 ]
-model_epochs = [1, 1, 0]
+model_epochs = [5, 5, 0]
 
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
