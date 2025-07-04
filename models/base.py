@@ -1,13 +1,17 @@
 import torch
 from torch import nn
+import torch_pruning as tp
+from utils.utils import test_loader
 
 class BaseNetwork(nn.Module):
     name = 'base_network'
 
-    def __init__(self, layer_sizes):
+    def __init__(self, layer_sizes, importance_criterion, *args):
         super().__init__()
 
         self.layer_sizes = layer_sizes
+        self.importance_criterion = importance_criterion
+        self.args = args
 
         self.flatten = nn.Flatten()
         layers = []
@@ -22,14 +26,27 @@ class BaseNetwork(nn.Module):
         x = self.layers(x)
         return x
 
-    def regularization(self, epoch=None, epochs=None):
+    def regularization(self, *_):
         return 0
 
     def normalize(self, weights):
         return torch.abs(weights) / torch.sum(torch.abs(weights))
 
     def prune(self, amount):
-        """
-        To be implemented in subclass.
-        """
-        raise NotImplementedError()
+        result = self.__class__(self.layer_sizes, *self.args)
+        result.load_state_dict(self.state_dict())
+        
+        example_inputs, _ = next(iter(test_loader))
+        example_inputs = example_inputs[:1]
+        ignored_layers = [result.layers[-1]]  # Skip final classification layer
+
+        pruner = tp.pruner.BasePruner(
+            result,
+            example_inputs,
+            importance = self.importance_criterion,
+            pruning_ratio = 1 - amount,
+            ignored_layers=ignored_layers
+        )
+        pruner.step()
+
+        return result
