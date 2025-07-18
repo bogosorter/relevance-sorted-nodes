@@ -5,4 +5,4 @@ class RandomNetwork(BaseNetwork):
     name = 'random_network'
 
     def __init__(self, layer_sizes):
-        super().__init__(layer_sizes, imp.RandomImportance())
+        super().__init__(layer_sizes, imp.RandomImportance(), False)

@@ -6,11 +6,12 @@ from utils.utils import test_loader
 class BaseNetwork(nn.Module):
     name = 'base_network'
 
-    def __init__(self, layer_sizes, importance_criterion, *args):
+    def __init__(self, layer_sizes, importance_criterion, global_pruning, *args):
         super().__init__()
 
         self.layer_sizes = layer_sizes
         self.importance_criterion = importance_criterion
+        self.global_pruning = global_pruning
         self.args = args
 
         self.flatten = nn.Flatten()
@@ -45,7 +46,8 @@ class BaseNetwork(nn.Module):
             example_inputs,
             importance = self.importance_criterion,
             pruning_ratio = 1 - amount,
-            ignored_layers=ignored_layers
+            ignored_layers = ignored_layers,
+            global_pruning = self.global_pruning
         )
         pruner.step()
 

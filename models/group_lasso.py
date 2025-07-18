@@ -5,13 +5,24 @@ from models.base import BaseNetwork
 class GroupLassoNetwork(BaseNetwork):
     name = 'group_lasso_network'
 
-    def __init__(self, layer_sizes, lambda_reg):
-        super().__init__(layer_sizes, imp.MagnitudeImportance(p=2), lambda_reg)
-        self.lambda_reg = lambda_reg
+    def __init__(self, layer_sizes, alpha, beta):
+        super().__init__(layer_sizes, imp.MagnitudeImportance(p=2, group_reduction="gate"), True, alpha, beta)
+        self.alpha = alpha
+        self.beta = beta
 
     def regularization(self, *_):
-        reg_loss = 0
+        group_lasso = 0
+        l2_weights = 0
+        l2_biases = 0
+
         for name, param in self.named_parameters():
-            if 'weight' in name and param.dim() == 2:
-                reg_loss += torch.norm(param, p=2, dim=1).sum()
-        return self.lambda_reg * reg_loss
+            if 'weight' in name:
+                if param.dim() == 2:
+                    # group lasso on outgoing weight vectors
+                    group_lasso += torch.norm(param, p=2, dim=0).sum()
+                # standard L2
+                l2_weights += 0.5 * param.norm(p=2).pow(2)
+            elif 'bias' in name:
+                l2_biases += 0.5 * param.norm(p=2).pow(2)
+
+        return self.alpha * group_lasso + self.beta * (l2_weights + l2_biases)

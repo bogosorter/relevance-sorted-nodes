@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 from scipy import stats
 
-dataset = datasets.FashionMNIST
+dataset = datasets.MNIST
 
 train_data = dataset(
     root='data',

@@ -5,20 +5,21 @@ from models.ordered import OrderedNetwork
 from models.group_lasso import GroupLassoNetwork
 from models.post_train_pruning import PostTrainPruningNetwork
 from models.random import RandomNetwork
-from models.ordered2 import OrderedNetwork2
 from utils.utils import train, test, adjust_weights, conf_interval
 
 pruning_steps = 32
-adjusting_steps = 2
+adjusting_steps = 0
 repetitions = 10
 confidence = 0.95
 
 layers = [784, 400, 300, 100, 10]
 models = [
+    lambda: OrderedNetwork(layers, 0.5, 0.04),
+    lambda: GroupLassoNetwork(layers, 1e-4, 1e-4),
     lambda: PostTrainPruningNetwork(layers),
     lambda: RandomNetwork(layers)
 ]
-model_epochs = [5, 0]
+model_epochs = [5, 5, 5, 5]
 
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
