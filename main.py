@@ -8,7 +8,7 @@ from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights, conf_interval
 
 pruning_steps = 32
-adjusting_steps = 0
+adjustment_batches = 100
 repetitions = 10
 confidence = 0.95
 
@@ -37,7 +37,7 @@ for model, epochs in zip(models, model_epochs):
         for i in range(pruning_steps):
             amount = (i + 1) / pruning_steps
             pruned = instance.prune(amount)
-            adjust_weights(pruned, adjusting_steps, optimizer(pruned.parameters()), criterion)
+            adjust_weights(pruned, adjustment_batches, optimizer(pruned.parameters()), criterion)
 
             acc = test(pruned)
             results[i].append(acc)
