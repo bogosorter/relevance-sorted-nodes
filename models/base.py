@@ -41,13 +41,16 @@ class BaseNetwork(nn.Module):
         example_inputs = example_inputs[:1]
         ignored_layers = [result.layers[-1]]  # Skip final classification layer
 
+        # At exreme pruning levels, global pruning may remove entire layers
+        global_pruning = self.global_pruning and amount > 0.1
+
         pruner = tp.pruner.BasePruner(
             result,
             example_inputs,
             importance = self.importance_criterion,
             pruning_ratio = 1 - amount,
             ignored_layers = ignored_layers,
-            global_pruning = self.global_pruning
+            global_pruning = global_pruning
         )
         pruner.step()
 
