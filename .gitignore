@@ -2,9 +2,4 @@ venv/
 __pycache__
 data
 output
-fmnist-nonadjusted
-fmnist-adjusted
-mnist-nonadjusted
-mnist-adjusted
-cifar-nonadjusted
-cifar-adjusted
+output*
