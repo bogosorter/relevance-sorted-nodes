@@ -8,14 +8,14 @@ from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights, conf_interval
 
 pruning_steps = 32
-adjustment_batches = 100
-repetitions = 10
+adjustment_batches = 0
+repetitions = 20
 confidence = 0.95
 
-layers = [784, 400, 300, 100, 10]
+layers = [54, 64, 64, 32, 7]
 models = [
-    lambda: OrderedNetwork(layers, 0.5, 0.04),
-    lambda: GroupLassoNetwork(layers, 1e-4, 1e-4),
+    lambda: OrderedNetwork(layers, 0.9, 0.08),
+    lambda: GroupLassoNetwork(layers, 4e-2, 4e-2),
     lambda: PostTrainPruningNetwork(layers),
     lambda: RandomNetwork(layers)
 ]

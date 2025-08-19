@@ -1,27 +1,22 @@
 import torch
 from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.datasets import fetch_covtype
+from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy import stats
 
-dataset = datasets.MNIST
+# Load the Forest CoverType dataset
+cov = fetch_covtype()
+X = cov.data.astype("float32")
+y = cov.target.astype("int64") - 1
 
-train_data = dataset(
-    root='data',
-    train=True,
-    download=True,
-    transform=transforms.ToTensor()
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+train_data = TensorDataset(torch.from_numpy(X_train), torch.from_numpy(y_train))
+test_data = TensorDataset(torch.from_numpy(X_test), torch.from_numpy(y_test))
 
-test_data = dataset(
-    root='data',
-    train=False,
-    download=True,
-    transform=transforms.ToTensor()
-)
-
-train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_data, batch_size=64, shuffle=False)
+train_loader = DataLoader(train_data, batch_size=512, shuffle=True)
+test_loader = DataLoader(test_data, batch_size=512, shuffle=False)
 
 def train(model, epochs, optimizer, loss_fn):
     model.train()

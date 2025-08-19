@@ -3,3 +3,4 @@ torchvision
 torch_pruning
 matplotlib
 scipy
+scikit-learn
