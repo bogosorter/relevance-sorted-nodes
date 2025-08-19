@@ -8,18 +8,18 @@ from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights, conf_interval
 
 pruning_steps = 32
-adjustment_batches = 0
-repetitions = 20
+adjustment_batches = 40
+repetitions = 40
 confidence = 0.95
 
-layers = [54, 64, 64, 32, 7]
+layers = [48, 64, 64, 32, 11]
 models = [
-    lambda: OrderedNetwork(layers, 0.9, 0.08),
-    lambda: GroupLassoNetwork(layers, 4e-2, 4e-2),
+    lambda: OrderedNetwork(layers, 0.9, 0.003),
+    lambda: GroupLassoNetwork(layers, 6e-4, 6e-4),
     lambda: PostTrainPruningNetwork(layers),
     lambda: RandomNetwork(layers)
 ]
-model_epochs = [5, 5, 5, 5]
+model_epochs = [10, 10, 10, 10]
 
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()

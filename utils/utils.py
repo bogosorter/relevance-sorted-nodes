@@ -7,16 +7,16 @@ import numpy as np
 from scipy import stats
 
 # Load the Forest CoverType dataset
-cov = fetch_covtype()
-X = cov.data.astype("float32")
-y = cov.target.astype("int64") - 1
+data = np.loadtxt("./data/sdd/Sensorless_drive_diagnosis.txt")
+X = data[:, :-1].astype("float32")
+y = data[:, -1].astype("int64") - 1
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 train_data = TensorDataset(torch.from_numpy(X_train), torch.from_numpy(y_train))
 test_data = TensorDataset(torch.from_numpy(X_test), torch.from_numpy(y_test))
 
-train_loader = DataLoader(train_data, batch_size=512, shuffle=True)
-test_loader = DataLoader(test_data, batch_size=512, shuffle=False)
+train_loader = DataLoader(train_data, batch_size=256, shuffle=True)
+test_loader = DataLoader(test_data, batch_size=256, shuffle=False)
 
 def train(model, epochs, optimizer, loss_fn):
     model.train()
