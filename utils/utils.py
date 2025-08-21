@@ -1,24 +1,8 @@
 import torch
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, TensorDataset
-from sklearn.datasets import fetch_covtype
-from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy import stats
 
-# Load the Forest CoverType dataset
-data = np.loadtxt("./data/sdd/Sensorless_drive_diagnosis.txt")
-X = data[:, :-1].astype("float32")
-y = data[:, -1].astype("int64") - 1
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-train_data = TensorDataset(torch.from_numpy(X_train), torch.from_numpy(y_train))
-test_data = TensorDataset(torch.from_numpy(X_test), torch.from_numpy(y_test))
-
-train_loader = DataLoader(train_data, batch_size=256, shuffle=True)
-test_loader = DataLoader(test_data, batch_size=256, shuffle=False)
-
-def train(model, epochs, optimizer, loss_fn):
+def train(model, epochs, optimizer, loss_fn, train_loader):
     model.train()
     for epoch in range(epochs):
         for input, target in train_loader:
@@ -28,7 +12,7 @@ def train(model, epochs, optimizer, loss_fn):
             loss.backward()
             optimizer.step()
 
-def test(model):
+def test(model, test_loader):
     model.eval()
 
     correct = 0
@@ -43,7 +27,7 @@ def test(model):
 
 # Runs the model on a small subset of the training data to adjust the weights
 # after pruning
-def adjust_weights(model, steps, optimizer, loss_fn):
+def adjust_weights(model, steps, optimizer, loss_fn, train_loader):
     model.train()
 
     for _ in range(steps):

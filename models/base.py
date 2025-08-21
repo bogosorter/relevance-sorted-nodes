@@ -1,15 +1,15 @@
 import torch
 from torch import nn
 import torch_pruning as tp
-from utils.utils import test_loader
 
 class BaseNetwork(nn.Module):
     name = 'base_network'
 
-    def __init__(self, layer_sizes, importance_criterion, global_pruning, *args):
+    def __init__(self, layer_sizes, train_loader, importance_criterion, global_pruning, *args):
         super().__init__()
 
         self.layer_sizes = layer_sizes
+        self.train_loader = train_loader
         self.importance_criterion = importance_criterion
         self.global_pruning = global_pruning
         self.args = args
@@ -34,10 +34,10 @@ class BaseNetwork(nn.Module):
         return torch.abs(weights) / torch.sum(torch.abs(weights))
 
     def prune(self, amount):
-        result = self.__class__(self.layer_sizes, *self.args)
+        result = self.__class__(self.layer_sizes, self.train_loader, *self.args)
         result.load_state_dict(self.state_dict())
         
-        example_inputs, _ = next(iter(test_loader))
+        example_inputs, _ = next(iter(self.train_loader))
         example_inputs = example_inputs[:1]
         ignored_layers = [result.layers[-1]]  # Skip final classification layer
 
