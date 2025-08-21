@@ -5,10 +5,10 @@ import torch_pruning as tp
 class BaseNetwork(nn.Module):
     name = 'base_network'
 
-    def __init__(self, layer_sizes, train_loader, importance_criterion, global_pruning, *args):
+    def __init__(self, architecture, train_loader, importance_criterion, global_pruning, *args):
         super().__init__()
 
-        self.layer_sizes = layer_sizes
+        self.architecture = architecture
         self.train_loader = train_loader
         self.importance_criterion = importance_criterion
         self.global_pruning = global_pruning
@@ -16,9 +16,9 @@ class BaseNetwork(nn.Module):
 
         self.flatten = nn.Flatten()
         layers = []
-        for i in range(len(layer_sizes) - 1):
-            layers.append(nn.Linear(layer_sizes[i], layer_sizes[i+1]))
-            if i < len(layer_sizes) - 2:
+        for i in range(len(architecture) - 1):
+            layers.append(nn.Linear(architecture[i], architecture[i+1]))
+            if i < len(architecture) - 2:
                 layers.append(nn.ReLU())
         self.layers = nn.Sequential(*layers)
 
@@ -34,7 +34,7 @@ class BaseNetwork(nn.Module):
         return torch.abs(weights) / torch.sum(torch.abs(weights))
 
     def prune(self, amount):
-        result = self.__class__(self.layer_sizes, self.train_loader, *self.args)
+        result = self.__class__(self.architecture, self.train_loader, *self.args)
         result.load_state_dict(self.state_dict())
         
         example_inputs, _ = next(iter(self.train_loader))

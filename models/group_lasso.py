@@ -5,8 +5,8 @@ from models.base import BaseNetwork
 class GroupLassoNetwork(BaseNetwork):
     name = 'group_lasso_network'
 
-    def __init__(self, layer_sizes, train_loader, alpha, beta):
-        super().__init__(layer_sizes, train_loader, imp.MagnitudeImportance(p=2, group_reduction="gate"), True, alpha, beta)
+    def __init__(self, architecture, train_loader, alpha, beta):
+        super().__init__(architecture, train_loader, imp.MagnitudeImportance(p=2, group_reduction="gate"), True, alpha, beta)
         self.alpha = alpha
         self.beta = beta
 

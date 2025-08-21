@@ -8,26 +8,31 @@ from models.random import RandomNetwork
 from utils.utils import train, test, adjust_weights, conf_interval
 from utils.datasets import load_mnist, load_fmnist, load_cifar10, load_covertype, load_sdd
 
-pruning_steps = 32
-adjustment_batches = 0
+# Statistics parameters
 repetitions = 5
 confidence = 0.95
-train_loader, test_loader = load_covertype()
+pruning_steps = 32
 
-layers = [54, 64, 32, 7]
-models = [
-    lambda: OrderedNetwork(layers, train_loader, 0.9, 0.08),
-    lambda: GroupLassoNetwork(layers, train_loader, 4e-2 ,4e-2),
-    lambda: PostTrainPruningNetwork(layers, train_loader),
-    lambda: RandomNetwork(layers, train_loader)
-]
-model_epochs = [3, 3, 3, 3]
+# Training parameters
+
+epochs = 5
+adjustment_batches = 0
+train_loader, test_loader = load_sdd()
 
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 
-for model, epochs in zip(models, model_epochs):
+architecture = [48, 64, 32, 11]
+models = [
+    lambda: OrderedNetwork(architecture, train_loader, 0.9, 5e-3),
+    lambda: GroupLassoNetwork(architecture, train_loader, 4e-4,4e-4),
+    lambda: PostTrainPruningNetwork(architecture, train_loader),
+    lambda: RandomNetwork(architecture, train_loader)
+]
 
+# Run the experiment
+
+for model in models:
     results = [[] for _ in range(pruning_steps)]
 
     for run in range(repetitions):
@@ -37,12 +42,12 @@ for model, epochs in zip(models, model_epochs):
         train(instance, epochs, optimizer(instance.parameters()), criterion, train_loader)
 
         for i in range(pruning_steps):
-            amount = (i + 1) / pruning_steps
-            pruned = instance.prune(amount)
+            model_size = (i + 1) / pruning_steps
+            pruned = instance.prune(model_size)
             adjust_weights(pruned, adjustment_batches, optimizer(pruned.parameters()), criterion, train_loader)
 
-            acc = test(pruned, test_loader)
-            results[i].append(acc)
+            result = test(pruned, test_loader)
+            results[i].append(result)
 
     os.makedirs('output', exist_ok=True)
 

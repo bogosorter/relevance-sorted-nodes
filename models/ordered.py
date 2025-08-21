@@ -5,16 +5,16 @@ import torch_pruning as tp
 class OrderedNetwork(BaseNetwork):
     name = 'ordered_network'
 
-    def __init__(self, layer_sizes, train_loader, alpha, beta):
-        super().__init__(layer_sizes, train_loader, OrderedImportance(), False, alpha, beta)
+    def __init__(self, architecture, train_loader, alpha, beta):
+        super().__init__(architecture, train_loader, OrderedImportance(), False, alpha, beta)
 
         self.alpha = alpha
         self.beta = beta
 
         self.penalties = []
-        for i in range(1, len(layer_sizes) - 1):
+        for i in range(1, len(architecture) - 1):
             self.penalties.append(
-                torch.tensor([j ** self.alpha for j in range(1, layer_sizes[i] + 1)])
+                torch.tensor([j ** self.alpha for j in range(1, architecture[i] + 1)])
             )
         
         self.scale_weights_by_penalty()
