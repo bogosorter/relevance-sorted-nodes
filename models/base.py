@@ -5,11 +5,10 @@ import torch_pruning as tp
 class BaseNetwork(nn.Module):
     name = 'base_network'
 
-    def __init__(self, architecture, train_loader, importance_criterion, global_pruning, *args):
+    def __init__(self, architecture, importance_criterion, global_pruning, *args):
         super().__init__()
 
         self.architecture = architecture
-        self.train_loader = train_loader
         self.importance_criterion = importance_criterion
         self.global_pruning = global_pruning
         self.args = args
@@ -34,12 +33,12 @@ class BaseNetwork(nn.Module):
         return torch.abs(weights) / torch.sum(torch.abs(weights))
 
     def prune(self, amount):
-        result = self.__class__(self.architecture, self.train_loader, *self.args)
+        result = self.__class__(self.architecture, *self.args)
         result.load_state_dict(self.state_dict())
         
-        example_inputs, _ = next(iter(self.train_loader))
-        example_inputs = example_inputs[:1]
+        example_inputs = torch.randn(1, self.architecture[0])
         ignored_layers = [result.layers[-1]]  # Skip final classification layer
+
 
         # At exreme pruning levels, global pruning may remove entire layers
         global_pruning = self.global_pruning and amount > 0.1

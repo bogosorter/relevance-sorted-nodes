@@ -24,10 +24,10 @@ criterion = torch.nn.CrossEntropyLoss()
 
 architecture = [48, 64, 32, 11]
 models = [
-    lambda: OrderedNetwork(architecture, train_loader, 0.9, 5e-3),
-    lambda: GroupLassoNetwork(architecture, train_loader, 4e-4,4e-4),
-    lambda: PostTrainPruningNetwork(architecture, train_loader),
-    lambda: RandomNetwork(architecture, train_loader)
+    lambda: OrderedNetwork(architecture, 0.9, 5e-3),
+    lambda: GroupLassoNetwork(architecture, 4e-4,4e-4),
+    lambda: PostTrainPruningNetwork(architecture),
+    lambda: RandomNetwork(architecture)
 ]
 
 # Run the experiment

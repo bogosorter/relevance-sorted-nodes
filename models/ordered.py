@@ -5,8 +5,8 @@ import torch_pruning as tp
 class OrderedNetwork(BaseNetwork):
     name = 'ordered_network'
 
-    def __init__(self, architecture, train_loader, alpha, beta):
-        super().__init__(architecture, train_loader, OrderedImportance(), False, alpha, beta)
+    def __init__(self, architecture, alpha, beta):
+        super().__init__(architecture, OrderedImportance(), False, alpha, beta)
 
         self.alpha = alpha
         self.beta = beta
