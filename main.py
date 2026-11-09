@@ -9,20 +9,20 @@ from utils.utils import train, test, adjust_weights, conf_interval
 from utils.datasets import load_mnist, load_fmnist, load_cifar10, load_covertype, load_sdd
 
 # Statistics parameters
-repetitions = 5
+repetitions = 10
 confidence = 0.95
 pruning_steps = 32
 
 # Training parameters
 
 epochs = 5
-adjustment_batches = 0
-train_loader, test_loader = load_sdd()
+adjustment_batches = 40
+train_loader, test_loader = load_mnist()
 
 optimizer = torch.optim.Adam
 criterion = torch.nn.CrossEntropyLoss()
 
-architecture = [48, 64, 32, 11]
+architecture = [784, 400, 300, 100, 10]
 models = [
     lambda: OrderedNetwork(architecture, 0.9, 5e-3),
     lambda: GroupLassoNetwork(architecture, 4e-4,4e-4),
